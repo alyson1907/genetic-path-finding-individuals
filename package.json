@@ -1,0 +1,14 @@
+{
+  "name": "genetic-path-finding-individuals",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.html",
+  "scripts": {
+    "start": "browser-sync start --server -f -w"
+  },
+  "author": "Alyson Matheus Maruyama Nascimento",
+  "license": "ISC",
+  "dependencies": {
+    "browser-sync": "^2.26.7"
+  }
+}

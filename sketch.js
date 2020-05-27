@@ -4,8 +4,9 @@ class Individual {
     this.locationX = startX
     this.locationY = startY
     this.acceleration = 0 // TODO 
-    this.velocity = 2 // 1.5
+    this.velocity = 2
     this.genes = []
+    this.fitness = Number.MAX_SAFE_INTEGER
     this.isDead = false
     for (let i = 0; i < genesSize; i++) {
       this.genes.push(this.generateRandomInt(7))
@@ -66,9 +67,9 @@ class Individual {
       }
     }
   }
-  // Returns de distance from the current location and the ending point
-  calculateFitness (finishX, finishY) {
-    return Math.sqrt(Math.pow((this.locationX - finishX), 2) + Math.pow((this.locationY - finishY), 2))
+  // Calculates de euclidian distance between the current location and the ending point
+  updateFitness (finishX, finishY) {
+    this.fitness = Math.sqrt(Math.pow((this.locationX - finishX), 2) + Math.pow((this.locationY - finishY), 2))
   }
 
   checkCollision (obtacleList) {
@@ -80,7 +81,7 @@ class Individual {
       const obsHeightEnd = obs.iniY + obs.sizeY
 
       return (this.locationX >= obsWidthStart && this.locationX <= obsWidthEnd) // Is matching sobe obstacle width
-      && (this.locationY >= obsHeightStart && this.locationY <= obsHeightEnd) // Is matching sobe obstacle height
+        && (this.locationY >= obsHeightStart && this.locationY <= obsHeightEnd) // Is matching sobe obstacle height
       // && () // is Still inside the canvas
     })
     if (shouldDie) this.isDead = true
@@ -104,10 +105,10 @@ const generationInfo = {
 // Initial Obstacles (they will be rectangles)
 const obstacles = [
   { iniX: 307, iniY: 243, sizeX: 20, sizeY: 122 },
-  { iniX: 526, iniY: 547, sizeX: 20, sizeY: 122 },
-  { iniX: 533, iniY: 63, sizeX: 20, sizeY: 122 },
-  { iniX: 639, iniY: 260, sizeX: 20, sizeY: 122 },
-  { iniX: 871, iniY: 565, sizeX: 20, sizeY: 122 },
+  { iniX: 526, iniY: 547, sizeX: 20, sizeY: 150 },
+  { iniX: 533, iniY: 63, sizeX: 30, sizeY: 122 },
+  { iniX: 639, iniY: 260, sizeX: 20, sizeY: 150 },
+  { iniX: 871, iniY: 565, sizeX: 30, sizeY: 180 },
   { iniX: 896, iniY: 93, sizeX: 20, sizeY: 122 },
 ]
 
@@ -153,8 +154,11 @@ function draw () {
       - Mutation
   */
   if (generationInfo.currentGene > genesSize) {
+    // Next generation
     generationInfo.currentGene = 0
     generationInfo.currentGeneration += 1
+    const parents = naturalSelection(population)
+    console.log(parents)
   }
 }
 
@@ -171,14 +175,64 @@ const drawPopulation = population => {
 
 const checkCollisions = (population, obstacles) => {
   for (let i = 0; i < population.length; i++) {
-    population[i].checkCollision(obstacles)
+    const individual = population[i]
+    individual.checkCollision(obstacles)
   }
+}
+
+/** @returns {Array<Individual>} Array containing individuals for the next generation */
+const naturalSelection = (population) => {
+  /** @returns {{ min: Number, max: Number }} An object containing the min/max fitness found in the population */
+  const getMaxMinFitness = population => {
+    let min = 9999
+    let max = 0
+    for (let i = 0; i < population.length; i++) {
+      const individual = population[i]
+      if (individual.fitness <= min) min = individual.fitness
+      if (individual.fitness >= max) max = individual.fitness
+    }
+    return { min, max }
+  }
+
+  /** @returns {Array<Number>} An array containing the probabilities to be picked for next generation for each individual */
+  const probabilitiesToBePicked = population => {
+    const { min, max } = getMaxMinFitness(population)
+    const probabilities = []
+
+    for (let i = 0; i < population.length; i++) {
+      const individual = population[i]
+      // Normalizing fitness to range [1.0 ~ 0.0] (Lower fitness = 1.0, Higher fitness = 0.0)
+      probabilities[i] = Math.abs(((individual.fitness - min) / (max - min)) - 1)
+    }
+    return probabilities
+  }
+
+  /**
+   * @param {Array<Number>} probs Array of float numbers in range [0.0 ~ 1]. Each position represents the probability of the individual `i` to be selected
+   * @param {number} [weight=0] Float number between 0.0 ~ 1.0. The greater, the less individuals will be picked
+   */
+  const selectParents = (population, probs, weight = 0) => {
+    const selected = []
+    // Selecting individuals
+    probs.forEach((prob, i) => {
+      const random = Math.random() + weight
+      if (random < prob) selected.push(population[i])
+    })
+
+    return selected
+  }
+
+  const probs = probabilitiesToBePicked(population)
+  const parents = selectParents(population, probs, 0.2)
+  return parents
 }
 
 const nextMoment = population => {
   for (let i = 0; i < population.length; i++) {
-    population[i].updateVel()
-    population[i].updateLocation(population[i].genes[generationInfo.currentGene])
+    const individual = population[i]
+    individual.updateVel()
+    individual.updateLocation(population[i].genes[generationInfo.currentGene])
+    individual.updateFitness(goal.x, goal.y)
   }
 }
 
@@ -191,7 +245,6 @@ const nextMoment = population => {
  * 
 */
 function mouseClicked (event) {
-  console.log(event)
   obstacles.push({
     iniX: event.layerX,
     iniY: event.layerY,

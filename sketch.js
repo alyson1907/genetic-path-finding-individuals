@@ -4,7 +4,7 @@ class Individual {
     this.locationX = startX
     this.locationY = startY
     this.acceleration = 0 // TODO 
-    this.velocity = 2
+    this.velocity = 4
     this.genes = []
     this.fitness = Number.MAX_SAFE_INTEGER
     this.isDead = false
@@ -13,7 +13,7 @@ class Individual {
     }
   }
   // Generates an random integer between 0 ~ range (inclusive)
-  generateRandomInt (range) {
+  generateRandomInt (range = 7) {
     // Adding 1 so that `range` is INCLUSIVE
     return parseInt(Math.random() * (range + 1))
   }
@@ -91,10 +91,10 @@ class Individual {
 // HTML elements
 let canvas
 
-const genesSize = 64 // TODO update to 1024
+let genesSize = 128 // TODO update to 1024
 // Population initial values
-const popSize = 100
-const population = []
+const popSize = 1300
+let population = []
 const startLocationX = 100
 const startLocationY = 350
 const generationInfo = {
@@ -104,6 +104,12 @@ const generationInfo = {
 
 // Initial Obstacles (they will be rectangles)
 const obstacles = [
+  // Borders
+  // { iniX: 0, iniY: 0, sizeX: 3, sizeY: 700 }, // left
+  // { iniX: 0, iniY: 0, sizeX: 1080, sizeY: 3 }, // top
+  // { iniX: 1077, iniY: 0, sizeX: 3, sizeY: 700 }, // right
+  // { iniX: 0, iniY: 697, sizeX: 1080, sizeY: 3 }, // bottom
+  // Obstacles
   { iniX: 307, iniY: 243, sizeX: 20, sizeY: 122 },
   { iniX: 526, iniY: 547, sizeX: 20, sizeY: 150 },
   { iniX: 533, iniY: 63, sizeX: 30, sizeY: 122 },
@@ -114,6 +120,8 @@ const obstacles = [
 
 // Ending/Objective point
 const goal = { x: 980, y: 350 }
+// Record
+let recordX = 0
 
 // =============================================================================================
 // ===================================== MAIN PROGRAM ==========================================
@@ -142,6 +150,10 @@ function draw () {
 
   fill(color(120, 120, 120))
   drawPopulation(population)
+  // Drawing line record
+  const { bestX } = circleBestFit(population)
+  if (bestX > recordX) recordX = bestX
+  line(recordX, 0, recordX, windowHeight)
 
   checkCollisions(population, obstacles)
 
@@ -157,14 +169,39 @@ function draw () {
     // Next generation
     generationInfo.currentGene = 0
     generationInfo.currentGeneration += 1
+    console.log('Current Generation:', generationInfo.currentGeneration)
     const parents = naturalSelection(population)
-    console.log(parents)
+    console.log('Number of Selected Parents', parents.length)
+    const newPop = generateNewPop(parents, popSize)
+    const mutatedPop = mutationToPop(newPop)
+    population = mutatedPop
   }
 }
 
 // =============================================================================================
 // ===================================== POPULATION FUNCTIONS ==================================
 // =============================================================================================
+
+const circleBestFit = population => {
+  let bestFitness = 9999
+  let bestX = 0
+  let bestY = 0
+
+  for (let i = 0; i < population.length; i++) {
+    if (population[i].fitness <= bestFitness) {
+      bestFitness = population[i].fitness
+      bestX = population[i].locationX
+      bestY = population[i].locationY
+    }
+  }
+  fill(color(255, 120, 120))
+  circle(bestX, bestY, 15)
+  fill(color(120, 120, 120))
+  return {
+    bestX,
+    bestY
+  }
+}
 
 // Draws each individual in Canvas
 const drawPopulation = population => {
@@ -216,15 +253,80 @@ const naturalSelection = (population) => {
     // Selecting individuals
     probs.forEach((prob, i) => {
       const random = Math.random() + weight
-      if (random < prob) selected.push(population[i])
+      if ((random < prob) && !population[i].isDead) selected.push(population[i])
     })
 
     return selected
   }
 
   const probs = probabilitiesToBePicked(population)
-  const parents = selectParents(population, probs, 0.2)
+
+  const parents = selectParents(population, probs, 0.3)
+
   return parents
+}
+
+const mutationToPop = population => {
+  const mutation = (genes, mutationProb = 0.05) => {
+    const newGenes = genes.map(gene => {
+      const random = Math.random()
+      // Applying mutation
+      return random < mutationProb ? parseInt(Math.random() * 8) : gene
+    })
+
+    return newGenes
+  }
+
+  const mutatedPopulation = []
+  for (let i = 0; i < population.length; i++) {
+    const individual = population[i]
+    individual.genes = mutation(population[i].genes)
+    mutatedPopulation.push(individual)
+  }
+
+  return mutatedPopulation
+}
+
+const generateNewPop = (parents, popSize) => {
+  /** @returns {Array<Number>} Genes array */
+  const crossover = (parent1, parent2) => {
+    const median = parseInt(parent1.genes.length / 2)
+    const newGenes = []
+    // Parent1
+    for (let i = 0; i < median; i++) {
+      newGenes[i] = parent1.genes[i]
+    }
+    // Parent2
+    for (let i = median; i < parent2.genes.length; i++) {
+      newGenes[i] = parent2.genes[i]
+    }
+    return newGenes
+  }
+
+  // Generanting next generation
+  // Applying Crossing over and Mutation
+  const children = []
+  while (parents.length >= 2) {
+    const parent1 = parents.pop()
+    const parent2 = parents.pop()
+    // Generating children
+    const childGenes = crossover(parent1, parent2)
+    // each parent will generate X children
+    for (let i = 0; i < 3; i++) {
+      const child = new Individual(startLocationX, startLocationY)
+      child.genes = childGenes
+      // We should reserve X% of empty slots for new-coming children, so we only add the children if the `children array` is below that limit
+      if (children.length <= parseInt(popSize * 0.8)) children.push(child)
+    }
+  }
+
+  // Completing the remaining generation
+  const newPop = [...children]
+  for (let i = newPop.length; i < popSize; i++) {
+    newPop.push(new Individual(startLocationX, startLocationY, genesSize))
+  }
+
+  return newPop
 }
 
 const nextMoment = population => {

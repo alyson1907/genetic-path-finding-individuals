@@ -69,4 +69,3 @@ The tables below describe what each parameter does:
 | newIndPercentage `(Float)` | The percentage of the population that will be filled with newcoming random individuals for each generation | 0.1 |
 | mutationRate `(Float)` | The probability for each gene of an individual to mutate on a new generation | 0.05 |
 | selectParentsPercentage `(Float)` | Percentage of individuals picked from the remaining alive ones as parents for the next generation | 0.25 |
-

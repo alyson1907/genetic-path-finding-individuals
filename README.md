@@ -10,6 +10,8 @@ Make sure you have properly installed:
 - [npm](https://www.npmjs.com/get-npm)
 
 ## Running
+> **NOTE: When running, you can click (Left Mouse Button) inside the canvas to diynamically insert a new obstacle!**
+
 - First, clone this repository into your machine:
 ```
 git clone https://gitlab.com/alyson1907/genetic-path-finding-individuals.git

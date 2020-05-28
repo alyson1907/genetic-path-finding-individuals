@@ -4,9 +4,9 @@ class Individual {
     this.locationX = startX
     this.locationY = startY
     this.acceleration = 0 // TODO 
-    this.velocity = 4
+    this.velocity = 6
     this.genes = []
-    this.fitness = Number.MAX_SAFE_INTEGER
+    this.fitness = 999999
     this.isDead = false
     for (let i = 0; i < genesSize; i++) {
       this.genes.push(this.generateRandomInt(7))
@@ -91,9 +91,9 @@ class Individual {
 // HTML elements
 let canvas
 
-let genesSize = 128 // TODO update to 1024
+let genesSize = 1024 // TODO update to 1024
 // Population initial values
-const popSize = 1300
+const popSize = 1100
 let population = []
 const startLocationX = 100
 const startLocationY = 350
@@ -105,23 +105,63 @@ const generationInfo = {
 // Initial Obstacles (they will be rectangles)
 const obstacles = [
   // Borders
-  // { iniX: 0, iniY: 0, sizeX: 3, sizeY: 700 }, // left
-  // { iniX: 0, iniY: 0, sizeX: 1080, sizeY: 3 }, // top
-  // { iniX: 1077, iniY: 0, sizeX: 3, sizeY: 700 }, // right
-  // { iniX: 0, iniY: 697, sizeX: 1080, sizeY: 3 }, // bottom
+  { iniX: -50, iniY: 0, sizeX: 50, sizeY: 700 }, // left
+  { iniX: 0, iniY: -40, sizeX: 1080, sizeY: 43 }, // top
+  { iniX: 1077, iniY: 0, sizeX: 40, sizeY: 700 }, // right
+  { iniX: 0, iniY: 697, sizeX: 1080, sizeY: 43 }, // bottom
   // Obstacles
-  { iniX: 307, iniY: 243, sizeX: 20, sizeY: 122 },
-  { iniX: 526, iniY: 547, sizeX: 20, sizeY: 150 },
-  { iniX: 533, iniY: 63, sizeX: 30, sizeY: 122 },
-  { iniX: 639, iniY: 260, sizeX: 20, sizeY: 150 },
-  { iniX: 871, iniY: 565, sizeX: 30, sizeY: 180 },
-  { iniX: 896, iniY: 93, sizeX: 20, sizeY: 122 },
+  // { iniX: 307, iniY: 243, sizeX: 20, sizeY: 122 },
+  // { iniX: 526, iniY: 547, sizeX: 20, sizeY: 150 },
+  // { iniX: 533, iniY: 63, sizeX: 30, sizeY: 122 },
+  // { iniX: 639, iniY: 260, sizeX: 20, sizeY: 150 },
+  // { iniX: 871, iniY: 565, sizeX: 30, sizeY: 180 },
+  // { iniX: 896, iniY: 93, sizeX: 20, sizeY: 122 },
+
+  //  Caminho Zigue-Zague
+  { iniX: 264, iniY: 14, sizeX: 20, sizeY: 100 },
+  { iniX: 266, iniY: 0, sizeX: 20, sizeY: 100 },
+  { iniX: 265, iniY: 116, sizeX: 20, sizeY: 100 },
+  { iniX: 266, iniY: 198, sizeX: 20, sizeY: 100 },
+  { iniX: 264, iniY: 288, sizeX: 20, sizeY: 100 },
+  { iniX: 265, iniY: 377, sizeX: 20, sizeY: 100 },
+  { iniX: 267, iniY: 468, sizeX: 20, sizeY: 100 },
+  { iniX: 450, iniY: 71, sizeX: 20, sizeY: 100 },
+  { iniX: 453, iniY: 177, sizeX: 20, sizeY: 100 },
+  { iniX: 444, iniY: 287, sizeX: 20, sizeY: 100 },
+  { iniX: 451, iniY: 270, sizeX: 20, sizeY: 100 },
+  { iniX: 444, iniY: 387, sizeX: 20, sizeY: 100 },
+  { iniX: 448, iniY: 488, sizeX: 20, sizeY: 100 },
+  { iniX: 446, iniY: 590, sizeX: 20, sizeY: 100 },
+  { iniX: 450, iniY: 688, sizeX: 20, sizeY: 100 },
+  { iniX: 719, iniY: 5, sizeX: 20, sizeY: 100 },
+  { iniX: 722, iniY: 106, sizeX: 20, sizeY: 100 },
+  { iniX: 751, iniY: 147, sizeX: 20, sizeY: 100 },
+  { iniX: 784, iniY: 164, sizeX: 20, sizeY: 100 },
+  { iniX: 785, iniY: 138, sizeX: 20, sizeY: 100 },
+  { iniX: 815, iniY: 135, sizeX: 20, sizeY: 100 },
+  { iniX: 828, iniY: 138, sizeX: 20, sizeY: 100 },
+  { iniX: 830, iniY: 138, sizeX: 20, sizeY: 100 },
+  { iniX: 858, iniY: 146, sizeX: 20, sizeY: 100 },
+  { iniX: 873, iniY: 150, sizeX: 20, sizeY: 100 },
+  { iniX: 904, iniY: 146, sizeX: 20, sizeY: 100 },
+  { iniX: 911, iniY: 149, sizeX: 20, sizeY: 100 },
+  { iniX: 924, iniY: 158, sizeX: 20, sizeY: 100 },
+  { iniX: 953, iniY: 164, sizeX: 20, sizeY: 100 },
+  { iniX: 965, iniY: 165, sizeX: 20, sizeY: 100 },
+  { iniX: 984, iniY: 165, sizeX: 20, sizeY: 100 },
+  { iniX: 1013, iniY: 168, sizeX: 20, sizeY: 100 },
+  { iniX: 708, iniY: 403, sizeX: 20, sizeY: 100 },
+  { iniX: 715, iniY: 517, sizeX: 20, sizeY: 100 },
+  { iniX: 716, iniY: 508, sizeX: 20, sizeY: 100 },
+  { iniX: 715, iniY: 610, sizeX: 20, sizeY: 100 },
+  { iniX: 715, iniY: 638, sizeX: 20, sizeY: 100 },
+  { iniX: 1009, iniY: 173, sizeX: 20, sizeY: 100 }
 ]
 
 // Ending/Objective point
 const goal = { x: 980, y: 350 }
 // Record
-let recordX = 0
+let avgFitness = 0
 
 // =============================================================================================
 // ===================================== MAIN PROGRAM ==========================================
@@ -152,8 +192,6 @@ function draw () {
   drawPopulation(population)
   // Drawing line record
   const { bestX } = circleBestFit(population)
-  if (bestX > recordX) recordX = bestX
-  line(recordX, 0, recordX, windowHeight)
 
   checkCollisions(population, obstacles)
 
@@ -169,12 +207,21 @@ function draw () {
     // Next generation
     generationInfo.currentGene = 0
     generationInfo.currentGeneration += 1
+    console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~')
     console.log('Current Generation:', generationInfo.currentGeneration)
+
+    avgFitness = calculateAvgFitness(population)
+    console.log('Average Fitness (Lower = Better):', avgFitness)
+
+    console.log('Remaining Alive:', removeDead(population).length)
+
     const parents = naturalSelection(population)
     console.log('Number of Selected Parents', parents.length)
     const newPop = generateNewPop(parents, popSize)
     const mutatedPop = mutationToPop(newPop)
     population = mutatedPop
+    console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+
   }
 }
 
@@ -188,7 +235,7 @@ const circleBestFit = population => {
   let bestY = 0
 
   for (let i = 0; i < population.length; i++) {
-    if (population[i].fitness <= bestFitness) {
+    if ((population[i].fitness <= bestFitness) && !population[i].isDead) {
       bestFitness = population[i].fitness
       bestX = population[i].locationX
       bestY = population[i].locationY
@@ -259,9 +306,17 @@ const naturalSelection = (population) => {
     return selected
   }
 
-  const probs = probabilitiesToBePicked(population)
+  const selectParentsFlat = (population, percentage = 0.25) => {
+    const numberOfParents = popSize * percentage
+    // Individual at index 0 will be the one with lower distance to the finish point
+    const sortedByFitness = population.sort((indA, indB) => indA.fitness < indB.fitness ? -1 : 1)
+    // Removing dead individuals
+    const alive = removeDead(sortedByFitness)
+    return alive.slice(0, numberOfParents)
+  }
 
-  const parents = selectParents(population, probs, 0.3)
+  const probs = probabilitiesToBePicked(population)
+  const parents = selectParentsFlat(population)
 
   return parents
 }
@@ -290,41 +345,57 @@ const mutationToPop = population => {
 const generateNewPop = (parents, popSize) => {
   /** @returns {Array<Number>} Genes array */
   const crossover = (parent1, parent2) => {
-    const median = parseInt(parent1.genes.length / 2)
-    const newGenes = []
-    // Parent1
-    for (let i = 0; i < median; i++) {
-      newGenes[i] = parent1.genes[i]
+    const median = parseInt((Math.random() * parent1.genes.length))
+    const newGenes = {
+      child1: [],
+      child2: []
     }
-    // Parent2
-    for (let i = median; i < parent2.genes.length; i++) {
-      newGenes[i] = parent2.genes[i]
-    }
+
+    newGenes.child1 = parent1.genes.slice(0, median)
+    newGenes.child2 = parent2.genes.slice(0, median)
+
+    newGenes.child1 = [...newGenes.child1, ...parent2.genes.slice(median + 1)]
+    newGenes.child2 = [...newGenes.child2, ...parent1.genes.slice(median + 1)]
+
     return newGenes
   }
 
   // Generanting next generation
-  // Applying Crossing over and Mutation
-  const children = []
-  while (parents.length >= 2) {
-    const parent1 = parents.pop()
-    const parent2 = parents.pop()
-    // Generating children
-    const childGenes = crossover(parent1, parent2)
-    // each parent will generate X children
-    for (let i = 0; i < 3; i++) {
-      const child = new Individual(startLocationX, startLocationY)
-      child.genes = childGenes
-      // We should reserve X% of empty slots for new-coming children, so we only add the children if the `children array` is below that limit
-      if (children.length <= parseInt(popSize * 0.8)) children.push(child)
-    }
-  }
+  // Shoving parents for next generation
+  const newPop = [...parents.map(parent => {
+    // reseting start location for parents
+    parent.locationX = startLocationX
+    parent.locationY = startLocationY
+    return parent
+  })]
 
   // Completing the remaining generation
-  const newPop = [...children]
-  for (let i = newPop.length; i < popSize; i++) {
+  for (let i = newPop.length; i < parseInt(0.1 * popSize); i++) {
     newPop.push(new Individual(startLocationX, startLocationY, genesSize))
   }
+
+  // Applying Reproduction (Crossover)
+  while (newPop.length <= popSize) {
+    // getting 2 random parents to reproduce
+    const i = Math.floor(Math.random() * parents.length)
+    const i2 = Math.floor(Math.random() * parents.length)
+    const parent1 = parents[i]
+    const parent2 = parents[i2]
+
+    // Generating children
+    const childrenGenes = crossover(parent1, parent2)
+    // each parent will generate X children
+    const child1 = new Individual(startLocationX, startLocationY)
+    const child2 = new Individual(startLocationX, startLocationY)
+    child1.genes = childrenGenes.child1
+    child2.genes = childrenGenes.child2
+
+    // We should reserve X% of empty slots for new-coming children, so we only add the children if the `children array` is below that limit
+    newPop.push(child1)
+    newPop.push(child2)
+  }
+
+
 
   return newPop
 }
@@ -358,3 +429,18 @@ function mouseClicked (event) {
 const drawObstacles = obstacleList => {
   obstacleList.forEach(obs => rect(obs.iniX, obs.iniY, obs.sizeX, obs.sizeY))
 }
+
+// =============================================================================================
+// ===================================== HELPERS ===============================================
+// =============================================================================================
+
+const calculateAvgFitness = (population) => {
+  const alive = removeDead(population)
+  const fitSum = alive.reduce((acc, individual) => {
+    return acc += individual.fitness
+  }, 0)
+
+  return fitSum / alive.length
+}
+
+const removeDead = population => population.filter(individual => !individual.isDead)

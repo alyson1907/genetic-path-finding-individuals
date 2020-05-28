@@ -14,6 +14,8 @@ let genesSize = 1024
 const popSize = 450
 const startLocationX = 100
 const startLocationY = 350
+// Ending/Objective point
+const goal = { x: 980, y: 350 }
 const generationInfo = {
   currentGene: 0,
   currentGeneration: 0
@@ -43,8 +45,6 @@ const obstacles = [
 
 ]
 
-// Ending/Objective point
-const goal = { x: 980, y: 350 }
 // Average Population Distance to the goal point
 let avgFitness = 0
 

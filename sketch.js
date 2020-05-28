@@ -4,7 +4,7 @@ class Individual {
     this.locationX = startX
     this.locationY = startY
     this.acceleration = 0 // TODO 
-    this.velocity = 6
+    this.velocity = 2
     this.genes = []
     this.fitness = 999999
     this.isDead = false
@@ -90,8 +90,11 @@ class Individual {
 
 // HTML elements
 let canvas
+const canvasWidth = 1080
+const canvasHeight = 700
 
-let genesSize = 1024 // TODO update to 1024
+// Increasing `geneSize` also results in lifetime increasing
+let genesSize = 8
 // Population initial values
 const popSize = 1100
 let population = []
@@ -105,10 +108,10 @@ const generationInfo = {
 // Initial Obstacles (they will be rectangles)
 const obstacles = [
   // Borders
-  { iniX: -50, iniY: 0, sizeX: 50, sizeY: 700 }, // left
-  { iniX: 0, iniY: -40, sizeX: 1080, sizeY: 43 }, // top
-  { iniX: 1077, iniY: 0, sizeX: 40, sizeY: 700 }, // right
-  { iniX: 0, iniY: 697, sizeX: 1080, sizeY: 43 }, // bottom
+  { iniX: -49, iniY: 0, sizeX: 50, sizeY: canvasHeight }, // left
+  { iniX: 0, iniY: -40, sizeX: canvasWidth, sizeY: 41 }, // top
+  { iniX: canvasWidth - 3, iniY: 0, sizeX: 40, sizeY: canvasHeight }, // right
+  { iniX: 0, iniY: canvasHeight - 1, sizeX: canvasWidth, sizeY: 40 }, // bottom
   // Obstacles
   // { iniX: 307, iniY: 243, sizeX: 20, sizeY: 122 },
   // { iniX: 526, iniY: 547, sizeX: 20, sizeY: 150 },
@@ -168,7 +171,7 @@ let avgFitness = 0
 // =============================================================================================
 
 function setup () {
-  createCanvas(1080, 700)
+  createCanvas(canvasWidth, canvasHeight)
   background('#eee')
   canvas = document.getElementsByTagName('canvas')[0]
 

@@ -4,7 +4,7 @@ class Individual {
     this.locationX = startX
     this.locationY = startY
     this.acceleration = 0 // TODO 
-    this.velocity = 3
+    this.velocity = 4
     this.genes = []
     this.fitness = 999999
     this.isDead = false

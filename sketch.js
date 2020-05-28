@@ -136,7 +136,7 @@ let avgFitness = 0
 // ===================================== MAIN PROGRAM ==========================================
 // =============================================================================================
 
-const singleWholeIteration = () => {
+const runIteration = () => {
   checkCollisions(population, obstacles)
   nextMoment(population)
   generationInfo.currentGene++
@@ -166,7 +166,7 @@ function setup () {
 
   // Running before showing
   while (generationInfo.currentGeneration < startingGeneration) {
-    singleWholeIteration()
+    runIteration()
   }
 }
 

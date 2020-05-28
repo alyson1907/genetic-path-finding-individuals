@@ -29,6 +29,10 @@ const obstacles = [
   { iniX: canvasWidth - 3, iniY: 0, sizeX: 40, sizeY: canvasHeight }, // right
   { iniX: 0, iniY: canvasHeight - 1, sizeX: canvasWidth, sizeY: 40 }, // bottom
 
+  //  Zig-Zag Path
+  { iniX: 200, iniY: 0, sizeX: 20, sizeY: canvasHeight - 250 },
+  { iniX: 630, iniY: 300, sizeX: 20, sizeY: canvasHeight },
+  
   // Obstacles
   // { iniX: 307, iniY: 243, sizeX: 20, sizeY: 122 },
   // { iniX: 526, iniY: 547, sizeX: 20, sizeY: 150 },
@@ -37,9 +41,6 @@ const obstacles = [
   // { iniX: 871, iniY: 565, sizeX: 30, sizeY: 180 },
   // { iniX: 896, iniY: 93, sizeX: 20, sizeY: 122 },
 
-  //  Zig-Zag Path
-  { iniX: 200, iniY: 0, sizeX: 20, sizeY: canvasHeight - 250 },
-  { iniX: 630, iniY: 300, sizeX: 20, sizeY: canvasHeight },
 ]
 
 // Ending/Objective point
@@ -71,6 +72,11 @@ function draw () {
   // Drawing obstacles
   fill(color(0, 255, 255))
   drawObstacles(obstacles)
+
+  fill(color(0, 0, 0))
+  text(`Generation: ${generationInfo.currentGeneration}`, canvasWidth / 2, 20)
+  text(`Previous gen. Distance to Goal (Lower = Better): ${avgFitness}`, canvasWidth / 2, 36)
+  text(`Remaining Alive: ${removeDead(population).length}`, canvasWidth / 2, 52)
 
   fill(color(120, 120, 120))
   drawPopulation(population)
@@ -120,7 +126,6 @@ const removeDead = population => population.filter(individual => !individual.isD
  * - Walking
  * - Death of individuals
  * - Generation reset
- * 
  */
 const runIteration = (print = true) => {
   checkCollisions(population, obstacles)

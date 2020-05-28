@@ -7,11 +7,11 @@ let canvas
 const canvasWidth = 1080
 const canvasHeight = 700
 
+const startingGeneration = 0
 // Increasing `geneSize` also results in lifetime increasing
 let genesSize = 1024
 // Population initial values
-const popSize = 400
-let population = []
+const popSize = 450
 const startLocationX = 100
 const startLocationY = 350
 const generationInfo = {
@@ -19,7 +19,7 @@ const generationInfo = {
   currentGeneration: 0
 }
 
-const startingGeneration = 0
+let population = []
 
 // Initial Obstacles (they will be rectangles)
 const obstacles = [

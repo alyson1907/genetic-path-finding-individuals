@@ -48,6 +48,8 @@ The steps below show how the implementation in this repository approaches the ge
   - **Mutation** is applied to each individual
 - The new generation is left to walk...
 
+> NOTE: For each new generation, a percentage of slots are saved for new individuals containing random genes (see **newIndPercentage** parameter in section below)
+
 # Parameters
 All the paremeters used to run the program are located at the top of `sketch.js` file. 
 
@@ -58,9 +60,13 @@ The tables below describe what each parameter does:
 | **Parameter** | **Description** | **Default Value** |
 |:-----------------------------:|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------|
 | canvasWidth/canvasHeight | The size of the available space for the population | 1080, 700 |
-| startingGeneration | Chooses at what generation start the visual representation. <br><br>Before drawing, it will compute on background all generations (starting from 0) until this parameter.<br><br>The greater **startingGeneration** is set, the longer it will take to show the canvas | 0 |
-| genesSize | The greater, the longer is the Lifetime for each generation | 1024  |
-| popSize | How many individuals each population will contain | 450 |
+| startingGeneration `(Int)` | Chooses at what generation start the visual representation. <br><br>Before drawing on screen, it will compute in background all generations (starting from 0) until this parameter.<br><br>The greater **startingGeneration** is set, the longer it will take to show the canvas | 0 |
+| genesSize `(Int)` | The greater, the longer is the Lifetime for each generation | 1024  |
+| popSize `(Int)` | How many individuals each population will contain | 450 |
 | startLocationX/startLocationY | Where the population should spawn in a new generation | 100, 350 |
-| goal | The coordinates for the Goal Point | x: 980, y: 350 |
-| obstacles (Array) | Array containing coordinates for the Walls which the individuals can hit/die on | ------ |
+| goal `(Object)` | The coordinates for the Goal Point | x: 980, y: 350 |
+| obstacles `(Array)` | Array containing coordinates for the Walls which the individuals can hit/die on | ------ |
+| newIndPercentage `(Float)` | The percentage of the population that will be filled with newcoming random individuals for each generation | 0.1 |
+| mutationRate `(Float)` | The probability for each gene of an individual to mutate on a new generation | 0.05 |
+| selectParentsPercentage `(Float)` | Percentage of individuals picked from the remaining alive ones as parents for the next generation | 0.25 |
+

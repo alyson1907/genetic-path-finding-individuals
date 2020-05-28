@@ -89,7 +89,7 @@ const naturalSelection = (population) => {
   }
 
   const probs = probabilitiesToBePicked(population)
-  const parents = selectParentsFlat(population)
+  const parents = selectParentsFlat(population, selectParentsPercentage)
 
   return parents
 }
@@ -108,7 +108,7 @@ const mutationToPop = population => {
   const mutatedPopulation = []
   for (let i = 0; i < population.length; i++) {
     const individual = population[i]
-    individual.genes = mutation(population[i].genes)
+    individual.genes = mutation(population[i].genes, mutationRate)
     mutatedPopulation.push(individual)
   }
 
@@ -143,7 +143,7 @@ const generateNewPop = (parents, popSize) => {
   })]
 
   // Completing the remaining generation
-  for (let i = newPop.length; i < parseInt(0.1 * popSize); i++) {
+  for (let i = newPop.length; i < parseInt(newIndPercentage * popSize); i++) {
     newPop.push(new Individual(startLocationX, startLocationY, genesSize))
   }
 
@@ -167,8 +167,6 @@ const generateNewPop = (parents, popSize) => {
     newPop.push(child1)
     newPop.push(child2)
   }
-
-
 
   return newPop
 }

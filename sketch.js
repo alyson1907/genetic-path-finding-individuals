@@ -20,6 +20,11 @@ const generationInfo = {
   currentGene: 0,
   currentGeneration: 0
 }
+// Amount (%) of new random individuals in each generation
+const newIndPercentage = 0.1
+// Amount (%) of parents selected to the next generation
+const selectParentsPercentage = 0.25
+const mutationRate = 0.05
 
 let population = []
 

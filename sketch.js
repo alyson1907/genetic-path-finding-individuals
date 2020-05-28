@@ -4,7 +4,7 @@ class Individual {
     this.locationX = startX
     this.locationY = startY
     this.acceleration = 0 // TODO 
-    this.velocity = 2
+    this.velocity = 3
     this.genes = []
     this.fitness = 999999
     this.isDead = false
@@ -94,7 +94,7 @@ const canvasWidth = 1080
 const canvasHeight = 700
 
 // Increasing `geneSize` also results in lifetime increasing
-let genesSize = 8
+let genesSize = 256
 // Population initial values
 const popSize = 1100
 let population = []
@@ -104,6 +104,8 @@ const generationInfo = {
   currentGene: 0,
   currentGeneration: 0
 }
+
+const startingGeneration = 15
 
 // Initial Obstacles (they will be rectangles)
 const obstacles = [
@@ -121,44 +123,8 @@ const obstacles = [
   // { iniX: 896, iniY: 93, sizeX: 20, sizeY: 122 },
 
   //  Caminho Zigue-Zague
-  { iniX: 264, iniY: 14, sizeX: 20, sizeY: 100 },
-  { iniX: 266, iniY: 0, sizeX: 20, sizeY: 100 },
-  { iniX: 265, iniY: 116, sizeX: 20, sizeY: 100 },
-  { iniX: 266, iniY: 198, sizeX: 20, sizeY: 100 },
-  { iniX: 264, iniY: 288, sizeX: 20, sizeY: 100 },
-  { iniX: 265, iniY: 377, sizeX: 20, sizeY: 100 },
-  { iniX: 267, iniY: 468, sizeX: 20, sizeY: 100 },
-  { iniX: 450, iniY: 71, sizeX: 20, sizeY: 100 },
-  { iniX: 453, iniY: 177, sizeX: 20, sizeY: 100 },
-  { iniX: 444, iniY: 287, sizeX: 20, sizeY: 100 },
-  { iniX: 451, iniY: 270, sizeX: 20, sizeY: 100 },
-  { iniX: 444, iniY: 387, sizeX: 20, sizeY: 100 },
-  { iniX: 448, iniY: 488, sizeX: 20, sizeY: 100 },
-  { iniX: 446, iniY: 590, sizeX: 20, sizeY: 100 },
-  { iniX: 450, iniY: 688, sizeX: 20, sizeY: 100 },
-  { iniX: 719, iniY: 5, sizeX: 20, sizeY: 100 },
-  { iniX: 722, iniY: 106, sizeX: 20, sizeY: 100 },
-  { iniX: 751, iniY: 147, sizeX: 20, sizeY: 100 },
-  { iniX: 784, iniY: 164, sizeX: 20, sizeY: 100 },
-  { iniX: 785, iniY: 138, sizeX: 20, sizeY: 100 },
-  { iniX: 815, iniY: 135, sizeX: 20, sizeY: 100 },
-  { iniX: 828, iniY: 138, sizeX: 20, sizeY: 100 },
-  { iniX: 830, iniY: 138, sizeX: 20, sizeY: 100 },
-  { iniX: 858, iniY: 146, sizeX: 20, sizeY: 100 },
-  { iniX: 873, iniY: 150, sizeX: 20, sizeY: 100 },
-  { iniX: 904, iniY: 146, sizeX: 20, sizeY: 100 },
-  { iniX: 911, iniY: 149, sizeX: 20, sizeY: 100 },
-  { iniX: 924, iniY: 158, sizeX: 20, sizeY: 100 },
-  { iniX: 953, iniY: 164, sizeX: 20, sizeY: 100 },
-  { iniX: 965, iniY: 165, sizeX: 20, sizeY: 100 },
-  { iniX: 984, iniY: 165, sizeX: 20, sizeY: 100 },
-  { iniX: 1013, iniY: 168, sizeX: 20, sizeY: 100 },
-  { iniX: 708, iniY: 403, sizeX: 20, sizeY: 100 },
-  { iniX: 715, iniY: 517, sizeX: 20, sizeY: 100 },
-  { iniX: 716, iniY: 508, sizeX: 20, sizeY: 100 },
-  { iniX: 715, iniY: 610, sizeX: 20, sizeY: 100 },
-  { iniX: 715, iniY: 638, sizeX: 20, sizeY: 100 },
-  { iniX: 1009, iniY: 173, sizeX: 20, sizeY: 100 }
+  { iniX: 400, iniY: 0, sizeX: 20, sizeY: canvasHeight - 250 },
+  { iniX: 730, iniY: 300, sizeX: 20, sizeY: canvasHeight },
 ]
 
 // Ending/Objective point
@@ -170,6 +136,23 @@ let avgFitness = 0
 // ===================================== MAIN PROGRAM ==========================================
 // =============================================================================================
 
+const singleWholeIteration = () => {
+  checkCollisions(population, obstacles)
+  nextMoment(population)
+  generationInfo.currentGene++
+  if (generationInfo.currentGene > genesSize) {
+    // Next generation
+    generationInfo.currentGene = 0
+    generationInfo.currentGeneration += 1
+
+    const parents = naturalSelection(population)
+    const newPop = generateNewPop(parents, popSize)
+    const mutatedPop = mutationToPop(newPop)
+    population = mutatedPop
+  }
+}
+
+
 function setup () {
   createCanvas(canvasWidth, canvasHeight)
   background('#eee')
@@ -179,6 +162,11 @@ function setup () {
   for (let i = 0; i < popSize; i++) {
     const individual = new Individual(startLocationX, startLocationY, genesSize)
     population.push(individual)
+  }
+
+  // Running before showing
+  while (generationInfo.currentGeneration < startingGeneration) {
+    singleWholeIteration()
   }
 }
 

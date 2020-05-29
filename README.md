@@ -2,6 +2,8 @@
 ## Objective
 This repository implements a visualization of a Genetic Algorithm applied to individuals in order to find a path to the Goal Point.
 
+![Demonstration](./demo.gif)
+
 # How to Run/Execute
 ## Requirements
 Make sure you have properly installed:

@@ -1,5 +1,4 @@
 class Individual {
-  // Constructor: Initializes individual
   constructor (startX = 0, startY = 0, genesSize = 1024) {
     this.locationX = startX
     this.locationY = startY
@@ -82,7 +81,6 @@ class Individual {
 
       return (this.locationX >= obsWidthStart && this.locationX <= obsWidthEnd) // Is matching sobe obstacle width
         && (this.locationY >= obsHeightStart && this.locationY <= obsHeightEnd) // Is matching sobe obstacle height
-      // && () // is Still inside the canvas
     })
     if (shouldDie) this.isDead = true
   }

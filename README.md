@@ -1,5 +1,6 @@
 ### Author
 Alyson Matheus Maruyama Nascimento - 8532269
+
 Vídeo-demonstração: https://drive.google.com/file/d/16fUwuqiXrkt_iMFSf-FXP7m4x6SOS3X2/view?usp=sharing
 
 # Genetic Algorithm
